@@ -1,0 +1,29 @@
+---
+- name: Deploy Docker Swarm Stack
+  hosts: swarm_manager
+  become: yes
+
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Initialize Docker Swarm (if not already)
+      shell: docker swarm init || true
+
+    - name: Copy project files to EC2
+      synchronize:
+        src: ../
+        dest: /home/ec2-user/devops-task
+        recursive: yes
+
+    - name: Deploy stack
+      shell: docker stack deploy -c /home/ec2-user/devops-task/docker-compose.yml flaskstack
