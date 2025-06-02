@@ -4,7 +4,7 @@
   become: yes
 
   tasks:
-    - name: Install Docker
+    - name: Install Docker (Debian only)
       apt:
         name: docker.io
         state: present
@@ -22,8 +22,8 @@
     - name: Copy project files to EC2
       synchronize:
         src: ../
-        dest: /home/ec2-user/devops-task
+        dest: /home/ubuntu/devops-task
         recursive: yes
 
     - name: Deploy stack
-      shell: docker stack deploy -c /home/ec2-user/devops-task/docker-compose.yml flaskstack
+      shell: docker stack deploy -c /home/ubuntu/devops-task/docker-compose.yml flaskstack
