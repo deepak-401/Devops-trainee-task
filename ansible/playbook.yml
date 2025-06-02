@@ -21,7 +21,8 @@
 
     - name: Copy project files to EC2
       synchronize:
-        src: ../
+        src: /home/runner/work/Devops-trainee-task/Devops-trainee-task/
+
         dest: /home/ubuntu/devops-task
         recursive: yes
       delegate_to: localhost
