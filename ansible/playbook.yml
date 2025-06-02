@@ -24,6 +24,7 @@
         src: ../
         dest: /home/ubuntu/devops-task
         recursive: yes
+      delegate_to: localhost
 
     - name: Deploy stack
       shell: docker stack deploy -c /home/ubuntu/devops-task/docker-compose.yml flaskstack
