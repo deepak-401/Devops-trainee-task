@@ -1,4 +1,4 @@
-name: CI/CD Deploy to Docker Swarm
+name: Deploy Flask App
 
 on:
   push:
@@ -10,17 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install Ansible
-      run: sudo apt-get update && sudo apt-get install -y ansible sshpass
+      - name: Setup SSH key
+        run: |
+          echo "$PRIVATE_KEY" > key.pem
+          chmod 600 key.pem
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
 
-    - name: Run Ansible Playbook
-      env:
-        ANSIBLE_HOST_KEY_CHECKING: "False"
-      run: |
-        echo "$PRIVATE_KEY" > key.pem
-        chmod 600 key.pem
-        ansible-playbook ansible/deploy.yml -i ansible/hosts --private-key key.pem
-      shell: bash
+      - name: Run Ansible playbook
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+          ansible-playbook -i ansible/hosts ansible/playbook.yml --private-key key.pem
